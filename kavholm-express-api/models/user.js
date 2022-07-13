@@ -36,7 +36,7 @@ class User {
   }
 
   static async register(credentials) {
-    const requiredFields = ["email", "username", "firstName", "lastName", "password", "isAdmin"]
+    const requiredFields = ["email", "username", "firstName", "lastName", "password"]
     requiredFields.forEach((property) => {
       if (!credentials?.hasOwnProperty(property)) {
         throw new BadRequestError(`Missing ${property} in request body.`)
@@ -72,12 +72,12 @@ class User {
         credentials.firstName,
         credentials.lastName,
         hashedPassword,
-        credentials.isAdmin,
+        credentials.isAdmin || false,
       ]
     )
     const user = userResult.rows[0]
 
-    return user
+    return User.makePublicUser(user)
   }
 
   static async fetchUserByEmail(email) {
